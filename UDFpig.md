@@ -75,7 +75,7 @@ nano is_good_quality.py
 ### Python UDF Code
 
 ```python
-@outputSchema("valid:int")
+@outputSchema("is_good:boolean")
 def is_good_quality(q):
     if q is None:
         return False
