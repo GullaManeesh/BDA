@@ -221,7 +221,7 @@ chmod +x reducer.py
 # 9. Run Hadoop Streaming Job
 
 ```bash
-hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
+hadoop jar /usr/lib/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar \
 -file mapper.py \
 -mapper mapper.py \
 -file reducer.py \
