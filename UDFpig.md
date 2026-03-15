@@ -90,7 +90,7 @@ The Python UDF:
 
 1. Receives **quality code**
 2. Checks if it belongs to valid codes
-3. Returns **1 if valid**, **0 if invalid**
+3. Returns **True if valid**, **False if invalid**
 
 Valid quality codes:
 
@@ -186,8 +186,8 @@ DUMP B;
 Here:
 
 ```
-1 → Valid quality code
-0 → Invalid quality code
+True → Valid quality code
+False → Invalid quality code
 ```
 
 ---
