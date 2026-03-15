@@ -10,6 +10,7 @@ The program counts how many times each word appears in a text file.
 # 1. Start Hadoop Services
 
 Start Hadoop Distributed File System and YARN.
+in desktop
 ```bash
 sh own.sh
 start-dfs.sh
