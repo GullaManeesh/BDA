@@ -1,4 +1,16 @@
-1️⃣ Create Input File
+1️⃣ Start Hadoop
+start-dfs.sh
+start-yarn.sh
+jps
+
+Check services:
+You should see
+
+NameNode
+DataNode
+ResourceManager
+NodeManager
+2️⃣ Create Input File
 nano word.txt
 
 Example content:
@@ -12,37 +24,37 @@ Save:
 Ctrl + O
 Enter
 Ctrl + X
+3️⃣ Upload File to HDFS
+
+Create folder:
+
+hadoop fs -mkdir /piginput
+
+Upload file:
+
+hadoop fs -put word.txt /piginput
 
 Check:
 
-cat word.txt
-2️⃣ Start Pig in Local Mode
-pig -x local
+hadoop fs -ls /piginput
+4️⃣ Start Pig
+pig
 
-You will see:
+Pig prompt will appear:
 
 grunt>
-3️⃣ Load File
-A = LOAD 'word.txt' USING PigStorage(' ') AS (word:chararray);
-4️⃣ Group Words
+5️⃣ Load Data
+A = LOAD '/piginput/word.txt' USING PigStorage(' ') AS (word:chararray);
+6️⃣ Group Words
 B = GROUP A BY word;
-5️⃣ Count Words
+7️⃣ Count Words
 C = FOREACH B GENERATE group, COUNT(A);
-6️⃣ Display Output
+8️⃣ Display Output
 DUMP C;
 
-Output:
+Example output:
 
 hello 2
 hadoop 2
 big 2
 data 2
-Full Local Execution (Exam Quick Run)
-pig -x local
-
-Inside Pig:
-
-A = LOAD 'word.txt' USING PigStorage(' ') AS (word:chararray);
-B = GROUP A BY word;
-C = FOREACH B GENERATE group, COUNT(A);
-DUMP C;
