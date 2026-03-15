@@ -128,7 +128,7 @@ current_dept = None
 max_salary = 0
 
 for line in sys.stdin:
-    empid, dept, salary = line.strip().split()
+    dept, salary = line.strip().split()
     salary = int(salary)
 
     if current_dept == dept:
