@@ -11,6 +11,7 @@ To perform **Word Count** using **Apache Pig** and understand how Pig Latin proc
 Start Hadoop Distributed File System and YARN.
 
 ```bash
+sh own.sh
 start-dfs.sh
 start-yarn.sh
 jps
