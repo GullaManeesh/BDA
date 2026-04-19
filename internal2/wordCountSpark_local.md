@@ -18,6 +18,22 @@ In this experiment, PySpark is used to:
 
 ---
 
+## About Spark and PySpark
+### Apache Spark
+Apache Spark is a fast, distributed data processing engine
+It is used for big data processing across multiple machines
+It supports in-memory computation, making it faster than Hadoop MapReduce
+Spark supports multiple languages: Scala, Java, Python, R
+
+---
+
+### PySpark
+PySpark is the Python API of Apache Spark
+It allows developers to write Spark programs using Python instead of Scala/Java
+Internally, it uses Spark engine but provides a Python interface
+
+Your program uses:
+
 ## 🛠️ Requirements
 
 - Ubuntu OS
