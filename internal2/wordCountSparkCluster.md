@@ -23,6 +23,7 @@ This setup is called **pseudo-distributed mode**, where distributed computing co
 - **PySpark**
   Python API for writing Spark applications.
 
+
 ---
 
 ## ⚙️ Cluster Architecture (Single System)
