@@ -1,71 +1,36 @@
-# 🧪 Experiment: Word Count using Spark Cluster (Distributed Mode)
+# 🧪 Experiment: Word Count using Spark Cluster (Single System - Pseudo Distributed Mode)
 
 ## 🎯 Aim
-To implement a Word Count program using PySpark and execute it on a Spark Cluster (Master–Worker architecture).
+To implement a Word Count program using PySpark and execute it on a Spark cluster simulated on a single system (pseudo-distributed mode).
 
 ---
 
 ## 📖 Description
-This experiment demonstrates distributed data processing using Apache Spark.  
-A Spark cluster consisting of a Master node and Worker node is used to execute a Word Count program.
+This experiment demonstrates distributed data processing using Apache Spark on a single machine by simulating a cluster environment.
 
-The Master node handles scheduling and resource allocation, while the Worker node executes tasks in parallel.  
-The input data is distributed across the cluster, and the computation is performed using RDD transformations.
+Both the Master and Worker nodes run on the same system.  
+The Master node handles scheduling and resource allocation, while the Worker node executes tasks in parallel.
+
+This setup is called **pseudo-distributed mode**, where distributed computing concepts are demonstrated without multiple physical machines.
 
 ---
 
 ## 🛠️ Technologies Used
 
-- **Apache Spark (3.5.1)**  
-  Distributed data processing framework used to execute tasks in parallel.
+- **Apache Spark**
+  Distributed data processing framework.
 
-- **PySpark**  
-  Python API for Apache Spark used to write distributed programs.
-
-- **Ubuntu (20.04 & 22.04)**  
-  Operating system used for both Master and Worker nodes.
-
-- **SSH (Secure Shell)**  
-  Used for communication between Master and Worker nodes with passwordless login.
-
-- **Python**  
-  Programming language used to implement the Word Count logic.
+- **PySpark**
+  Python API for writing Spark applications.
 
 ---
 
-## 🌐 Environment Setup
+## ⚙️ Cluster Architecture (Single System)
 
-### Master Node
-- Hostname: admin38-Vostro-3020-SFF  
-- IP Address: 172.16.4.183  
-- OS: Ubuntu 20.04  
+- Master: localhost  
+- Worker: localhost  
 
-### Worker Node
-- IP Address: 172.16.5.185  
-- OS: Ubuntu 22.04  
-
----
-
-## ⚙️ Spark Cluster Architecture
-
-- Master: 172.16.4.183  
-- Worker: 172.16.5.185  
-
-Master → Schedules tasks  
-Worker → Executes tasks  
-
----
-
-## 🐍 Python Configuration Fix
-
-There was a Python version mismatch:
-
-- Master Python: Python 3.8  
-- Worker Python: Python 3.10  
-
-### Solution:
-- Driver Python: /home/hduser/.pyenv/shims/python3  
-- Worker Python: /usr/bin/python3  
+👉 Both run on the same machine
 
 ---
 
@@ -88,7 +53,7 @@ from pyspark import SparkContext
 
 sc = SparkContext(appName="WordCountExample")
 
-text = sc.textFile("file:///home/hduser/spark-26/spark_wordcount/input.txt")
+text = sc.textFile("input.txt")
 
 counts = (text
           .flatMap(lambda line: line.split(" "))
@@ -104,40 +69,51 @@ sc.stop()
 
 ---
 
-## ▶️ Steps to Execute (Cluster Mode)
+## ▶️ Steps to Execute (Single System Cluster)
 
-### 1. Start Worker Node
+### 1. Navigate to Spark Directory
 ```bash
-/usr/local/spark/sbin/start-worker.sh spark://172.16.4.183:7077
+cd /usr/local/spark
 ```
 
 ---
 
-### 2. Transfer Input File to Worker
+### 2. Start Master Node
 ```bash
-scp input.txt hduser@172.16.5.185:/home/hduser/spark-26/spark_wordcount/
+./sbin/start-master.sh
+```
+
+👉 Open Web UI:
+```
+http://localhost:8080
+```
+
+👉 Note Master URL (example):
+```
+spark://localhost:7077
 ```
 
 ---
 
-### 3. Run WordCount Program on Cluster
+### 3. Start Worker Node (Same System)
 ```bash
-PYSPARK_DRIVER_PYTHON=/usr/bin/python3 \
-PYSPARK_PYTHON=/usr/bin/python3 \
+./sbin/start-worker.sh spark://localhost:7077
+```
+
+---
+
+### 4. Go to Project Folder
+```bash
+cd ~/spark_local
+```
+
+---
+
+### 5. Run Word Count Program
+```bash
 /usr/local/spark/bin/spark-submit \
---master spark://172.16.4.183:7077 \
+--master spark://localhost:7077 \
 wordcount.py
-```
-
----
-
-### 4. Run Another Program (Example)
-```bash
-PYSPARK_DRIVER_PYTHON=/usr/bin/python3 \
-PYSPARK_PYTHON=/usr/bin/python3 \
-/usr/local/spark/bin/spark-submit \
---master spark://172.16.4.183:7077 \
-server_log.py
 ```
 
 ---
@@ -145,14 +121,8 @@ server_log.py
 ## ⚙️ Execution Behavior
 
 - Spark divides the job into multiple tasks  
-- Tasks are distributed to worker nodes  
-- Execution happens in parallel  
-
-Example log:
-```
-Starting task ... (172.16.5.185, executor 0)
-Finished task ... on 172.16.5.185
-```
+- Tasks are executed by the worker (same system)  
+- Parallel execution is simulated  
 
 ---
 
@@ -177,27 +147,24 @@ easy 1
 
 ## 🌐 Spark Web UI
 
-Access cluster monitoring:
 ```
-http://172.16.4.183:8080
+http://localhost:8080
 ```
 
 Displays:
-- Worker nodes  
-- CPU cores  
+- Worker node  
+- CPU usage  
 - Memory usage  
-- Running applications  
-- Task execution details  
+- Running jobs  
 
 ---
 
 ## ✅ Result
 
-The Word Count program was successfully executed on a Spark cluster.  
-Distributed processing was achieved by executing tasks across the worker node.
+The Word Count program was successfully executed using a Spark cluster simulated on a single system, demonstrating distributed processing.
 
 ---
 
 ## 📌 Conclusion
 
-The Spark cluster was successfully configured and used to execute distributed tasks across multiple machines, demonstrating parallel processing and efficient big data computation.
+A pseudo-distributed Spark cluster was created on a single machine by running both master and worker processes locally, successfully demonstrating parallel data processing.
