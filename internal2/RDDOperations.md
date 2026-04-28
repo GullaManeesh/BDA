@@ -16,11 +16,11 @@ Map transforms each element, Filter selects elements based on condition, FlatMap
 ## 🖥️ Commands to Execute (Ubuntu)
 
 spark-shell  
+```
 
 ## 💻 Full Code
 val data = sc.parallelize(List(1,2,3,4,5))
 
-```
 // MAP
 
 val mapRes = data.map(x => x * 2)
