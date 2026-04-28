@@ -20,7 +20,9 @@ spark-shell
 ## 💻 Full Code
 val data = sc.parallelize(List(1,2,3,4,5))
 
+```
 // MAP
+
 val mapRes = data.map(x => x * 2)
 mapRes.collect().foreach(println)
 
@@ -49,6 +51,7 @@ val graph = Graph(vertices, edges)
 graph.vertices.collect.foreach(println)
 graph.edges.collect.foreach(println)
 
+```
 ## 📊 Output at Each Step
 MAP OUTPUT:
 2  
