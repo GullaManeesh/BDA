@@ -8,11 +8,11 @@ This experiment uses Apache Spark to perform transformations on distributed data
 Map transforms each element, Filter selects elements based on condition, FlatMap splits and flattens data, and GraphX is used to represent graph data using vertices and edges.
 
 ## ⚙️ Technologies Used
-- Apache Spark – Distributed data processing framework  
-- Scala – Programming language for Spark  
-- GraphX – API for graph processing  
-- Ubuntu – Operating system  
+- Apache Spark – A powerful distributed data processing framework designed to handle large-scale data efficiently using parallel computation across clusters. It provides high-speed processing through in-memory computation and supports various data processing tasks like batch, streaming, and machine learning.
 
+- Scala – A high-level programming language that runs on the JVM and is widely used with Spark due to its functional programming capabilities and concise syntax. It enables efficient handling of distributed data operations and integrates seamlessly with Spark APIs.
+
+- GraphX – A component of Apache Spark specifically designed for graph processing, allowing users to model data as vertices and edges. It provides built-in operators for graph computation and enables analysis of relationships such as networks and connections.
 ## 🖥️ Commands to Execute (Ubuntu)
 
 spark-shell  
