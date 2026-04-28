@@ -15,17 +15,6 @@ In this experiment, a graph is created using vertices and edges, and GraphX comp
 - GraphX – A Spark API for graph processing that supports operations on vertices and edges and provides built-in algorithms like Connected Components.
 
 ## 🖥️ Commands to Execute (Ubuntu)
-sudo apt update  
-sudo apt install openjdk-11-jdk -y  
-sudo apt install scala -y  
-
-wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz  
-tar -xvzf spark-3.5.1-bin-hadoop3.tgz  
-mv spark-3.5.1-bin-hadoop3 ~/spark  
-
-echo 'export SPARK_HOME=~/spark' >> ~/.bashrc  
-echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc  
-source ~/.bashrc  
 
 spark-shell  
 
