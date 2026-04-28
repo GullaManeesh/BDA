@@ -15,21 +15,12 @@ In this experiment, a graph is created using vertices and edges, and the PageRan
 - GraphX – A graph processing API in Apache Spark that allows representation of data as vertices and edges. It provides built-in algorithms like PageRank to analyze relationships in graph data.
 
 ## 🖥️ Commands to Execute (Ubuntu)
-sudo apt update  
-sudo apt install openjdk-11-jdk -y  
-sudo apt install scala -y  
-
-wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz  
-tar -xvzf spark-3.5.1-bin-hadoop3.tgz  
-mv spark-3.5.1-bin-hadoop3 ~/spark  
-
-echo 'export SPARK_HOME=~/spark' >> ~/.bashrc  
-echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc  
-source ~/.bashrc  
 
 spark-shell  
 
 ## 💻 Full Code
+
+```
 import org.apache.spark.graphx._
 
 val vertices = sc.parallelize(Array(
@@ -49,6 +40,7 @@ ranks.collect.foreach{
   case(id, rank) => println(s"Node $id rank = $rank")
 }
 
+```
 ## 📊 Output at Each Step
 Initial Graph:
 Vertices:
