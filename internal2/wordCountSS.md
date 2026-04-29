@@ -1,64 +1,113 @@
-# 🧪 Experiment: Word Count using Structured Streaming (Apache Spark)
+# 🧪 Experiment 3: Word Count (Live Socket Stream)
 
 ## 🎯 Aim
-To perform real-time word count using Apache Spark Structured Streaming.
+To perform live word count from a socket stream using Spark Structured Streaming.
 
 ## 📘 Description
-This experiment reads streaming text data from a socket source and processes it in real-time.  
-The input text is split into words, grouped, and counted dynamically as new data arrives. The results are continuously displayed on the console using Structured Streaming.
+This experiment processes real-time streaming data using Apache Spark Structured Streaming.  
+Text data is continuously read from a socket (localhost:9999), split into words, grouped, and counted dynamically.  
+The output updates continuously as new data arrives, enabling real-time analytics.
 
 ## ⚙️ Technologies Used
-- Apache Spark – A unified analytics engine that supports real-time data processing using Structured Streaming with high scalability and fault tolerance.
+- Apache Spark – A powerful distributed data processing engine that supports real-time stream processing using Structured Streaming with fault tolerance and scalability.
 
-- Scala – A JVM-based programming language used to write Spark applications efficiently with functional programming features.
+- PySpark – Python API for Apache Spark that allows writing Spark applications using Python, making it easy to process large-scale streaming data.
 
-- Spark SQL / Structured Streaming – A high-level API in Spark that processes streaming data using DataFrame and SQL operations, enabling real-time analytics.
+- Structured Streaming – A high-level streaming API in Spark that treats streaming data as a continuous table and allows real-time processing using DataFrame operations.
 
-## 🖥️ Commands to Execute (Ubuntu)
+## 🖥️ Commands to Execute (Step-by-Step)
 
-# Start Spark Shell
-spark-shell  
 
-## 💻 Full Code
-import org.apache.spark.sql.functions._
+### Step 1: Open Terminal 1 (Start Socket Stream)
+nc -lk 9999  
 
-val df = spark.readStream
-  .format("socket")
-  .option("host","localhost")
-  .option("port",9999)
-  .load()
+### Step 2: Open Terminal 2 (Run Program)
+spark-submit wordcount_stream.py  
 
-val words = df.selectExpr("explode(split(value,' ')) as word")
+## 💻 Full Code (wordcount_stream.py)
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import explode, split
 
-val counts = words.groupBy("word").count()
+spark = SparkSession.builder.appName('LiveWordCount') \
+    .master('local[*]').getOrCreate()
 
-val query = counts.writeStream
-  .outputMode("complete")
-  .format("console")
-  .start()
+spark.sparkContext.setLogLevel('ERROR')
+
+df = spark.readStream.format('socket') \
+    .option('host', 'localhost') \
+    .option('port', 9999).load()
+
+words = df.select(explode(split(df.value, ' ')).alias('word'))
+
+wordCounts = words.groupBy('word').count()
+
+query = wordCounts.writeStream.outputMode('complete') \
+    .format('console') \
+    .option('truncate', False) \
+    .option('checkpointLocation', '/tmp/wordcount_checkpoint') \
+    .start()
 
 query.awaitTermination()
 
 ## 📊 Output at Each Step
-Input Stream (Terminal 1):
-hello spark  
-hello world  
 
-Streaming Processing:
-Data is read line by line from socket  
-Words are split into individual tokens  
-Word counts are updated continuously  
+### 🔹 Terminal 1 Input (Live Stream)
+hi  
+hello  
+hadoop  
+hadoop  
+bda  
+bda bda  
 
-## ✅ Final Output (Console)
--------------------------------------------
-Batch: 0
--------------------------------------------
-+-----+-----+
-|word |count|
-+-----+-----+
-|hello|2    |
-|spark|1    |
-|world|1    |
-+-----+-----+
+(As shown in your lab output) :contentReference[oaicite:0]{index=0}
 
-(Output updates continuously as new data is entered)
+---
+
+### 🔹 Streaming Output (Terminal 2)
+
+Batch 1:
+word | count  
+hi   | 1  
+
+Batch 2:
+word | count  
+hello | 1  
+hi    | 1  
+
+Batch 3:
+word | count  
+hello  | 1  
+hi     | 1  
+hadoop | 1  
+
+Batch 4:
+word | count  
+hello  | 1  
+hi     | 1  
+hadoop | 2  
+
+Batch 5:
+word | count  
+hello  | 1  
+bda    | 1  
+hi     | 1  
+hadoop | 2  
+
+Batch 6:
+word | count  
+hello  | 1  
+bda    | 3  
+hi     | 1  
+hadoop | 2  
+
+---
+
+## ✅ Final Output
+The output continuously updates showing cumulative word counts in real-time:
+
+hello → 1  
+hi → 1  
+hadoop → 2  
+bda → 3  
+
+(Output keeps updating as new words are entered)
