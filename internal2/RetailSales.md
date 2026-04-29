@@ -38,13 +38,10 @@ spark-submit retail_stream.py
 
 ```python
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_timestamp, sum
+from pyspark.sql.functions import col, to_timestamp
 from pyspark.sql.types import *
 
-spark = SparkSession.builder.appName('Retail30DaysStreaming') \
-    .config('spark.hadoop.fs.defaultFS', 'file:///').getOrCreate()
-
-spark.sparkContext.setLogLevel('ERROR')
+spark = SparkSession.builder.appName("Retail").getOrCreate()
 
 schema = StructType([
     StructField("InvoiceNo", StringType()),
@@ -57,16 +54,19 @@ schema = StructType([
     StructField("Country", StringType())
 ])
 
-df = spark.readStream.option('header', True).schema(schema) \
-    .csv('retail_stream/')
+df = spark.readStream \
+    .option("header", True) \
+    .schema(schema) \
+    .csv("retail_stream")
 
-df = df.withColumn('InvoiceTimestamp', to_timestamp(col('InvoiceDate')))
-df = df.withColumn('TotalPrice', col('Quantity') * col('UnitPrice'))
+df = df.withColumn("eventTime", to_timestamp(col("InvoiceDate")))
+df = df.withColumn("TotalPrice", col("Quantity") * col("UnitPrice"))
 
-result = df.groupBy('Country').agg(sum('TotalPrice').alias('Revenue'))
+result = df.groupBy("Country").sum("TotalPrice")
 
-query = result.writeStream.outputMode('complete') \
-    .format('console') \
+query = result.writeStream \
+    .outputMode("complete") \
+    .format("console") \
     .start()
 
 query.awaitTermination()
