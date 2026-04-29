@@ -83,7 +83,6 @@ schema = StructType() \
 df = spark.readStream.format('kafka') \
     .option('kafka.bootstrap.servers', '127.0.0.1:9092') \
     .option('subscribe', 'cricket') \
-    .option('startingOffsets', 'latest') \
     .load()
 
 json_df = df.selectExpr('CAST(value AS STRING)')
