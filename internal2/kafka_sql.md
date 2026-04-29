@@ -43,6 +43,7 @@ python3 producer.py
 
 ## 💻 Full Code
 
+```python3
 ### Kafka Producer (producer.py)
 from kafka import KafkaProducer  
 import json, time, random  
@@ -61,6 +62,9 @@ while True:
     time.sleep(1)  
 
 ---
+```
+
+```sql
 
 ### Flink SQL Table
 CREATE TABLE kafka_stream (  
@@ -85,7 +89,7 @@ FROM kafka_stream
 GROUP BY TUMBLE(rowtime, INTERVAL '10' SECOND);  
 
 ---
-
+```
 ## 📊 Output at Each Step
 
 ### 🔹 Producer Output
