@@ -9,6 +9,12 @@ Each transaction is assigned an event time, and revenue is calculated using Tota
 The system groups data by country and time window, producing daily revenue per country.  
 The output updates as new files are streamed into the system.
 
+
+## 📌 What is Tumbling Window?
+A tumbling window is a fixed-size, non-overlapping time window used in stream processing.  
+Each data record belongs to exactly one window, and windows do not overlap.
+
+
 ## ⚙️ Technologies Used
 - Apache Spark – A distributed processing engine that supports real-time analytics using Structured Streaming and window-based computations.
 
