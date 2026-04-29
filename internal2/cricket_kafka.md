@@ -44,6 +44,7 @@ python3 cricket_producer.py
 
 ## 💻 Full Code
 
+```
 ### Producer (cricket_producer.py)
 from kafka import KafkaProducer
 import json, time, random
@@ -106,6 +107,8 @@ query = stats.writeStream.outputMode('complete') \
     .start()
 
 query.awaitTermination()
+
+```
 
 ## 📊 Output at Each Step
 
