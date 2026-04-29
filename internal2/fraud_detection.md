@@ -30,7 +30,7 @@ spark-submit fraud.py
 ---
 
 ## 💻 Full Code
-
+```python
 from pyspark.sql import SparkSession  
 from pyspark.ml.feature import VectorAssembler  
 from pyspark.ml.classification import LogisticRegression  
@@ -64,7 +64,7 @@ query = predictions.writeStream \
     .start()  
 
 query.awaitTermination()  
-
+```
 ---
 
 ## 📊 Output
