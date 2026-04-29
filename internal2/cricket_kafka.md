@@ -29,7 +29,7 @@ spark-submit consumer.py
 ---
 
 ## 💻 Full Code
-
+```python
 ### Producer (producer.py)
 from kafka import KafkaProducer  
 import json, random, time  
@@ -65,7 +65,7 @@ result = runs.agg(sum("runs").alias("total_runs"))
 
 query = result.writeStream.outputMode("complete").format("console").start()  
 query.awaitTermination()  
-
+```
 ---
 
 ## 📊 Output
