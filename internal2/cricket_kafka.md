@@ -44,7 +44,7 @@ python3 cricket_producer.py
 
 ## 💻 Full Code
 
-```
+```python
 ### Producer (cricket_producer.py)
 from kafka import KafkaProducer
 import json, time, random
