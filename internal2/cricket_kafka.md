@@ -51,8 +51,6 @@ while True:
     producer.flush()
     time.sleep(1)
 
----
-
 ### Spark Consumer (consumer.py)
 from pyspark.sql import SparkSession  
 from pyspark.sql.functions import *  
@@ -66,15 +64,15 @@ df = spark.readStream.format("kafka") \
 
 json_df = df.selectExpr("CAST(value AS STRING)")  
 
-runs = json_df.select(from_json(col("value"), "runs INT").alias("data")).select("data.*")  
+runs = json_df.select(
+    from_json(col("value"), "player STRING, runs INT").alias("data")
+).select("data.*")  
 
 result = runs.agg(sum("runs").alias("total_runs"))  
 
 query = result.writeStream.outputMode("complete").format("console").start()  
 query.awaitTermination()  
 ```
----
-
 ## 📊 Output
 
 Batch 0:  
