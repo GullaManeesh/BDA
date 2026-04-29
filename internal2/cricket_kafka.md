@@ -1,150 +1,97 @@
-# 🧪 Experiment: Cricket Score Analytics using Kafka + Spark Structured Streaming
+# 🧪 Experiment: Cricket Runs Streaming using Kafka + Spark
 
 ## 🎯 Aim
-To stream live cricket score data through Kafka and process it using Spark Structured Streaming to compute player statistics and strike rate in real time.
+To stream live cricket runs using Kafka and compute total runs in real-time using Spark Structured Streaming.
 
 ## 📘 Description
-This experiment demonstrates real-time data processing using Kafka and Spark.  
-A Kafka producer continuously sends cricket data (player and runs).  
-Spark Structured Streaming consumes this data, aggregates total runs and balls per player, and calculates strike rate dynamically.  
-The results update continuously as new data streams in.
-
-## 📌 What is Strike Rate?
-Strike Rate = (Total Runs / Balls Faced) × 100  
-It measures how quickly a player scores runs in cricket.
+In this experiment, a Kafka producer continuously sends random runs data.  
+Spark Structured Streaming consumes this data, converts it into a DataFrame, and calculates total runs dynamically.
 
 ## ⚙️ Technologies Used
-- Apache Kafka – A distributed streaming platform used to send and receive real-time data using producer-consumer architecture.
+- Apache Kafka – Used to stream real-time data (runs)
+- Apache Spark – Used to process streaming data
+- PySpark – Used to write streaming logic in Python
 
-- Apache Spark Structured Streaming – Processes real-time data streams and performs aggregation and analytics.
+## 🖥️ Commands to Execute
 
-- PySpark – Python API for Spark used to build streaming analytics applications.
-
-## 🖥️ Commands to Execute (Step-by-Step)
-
-### Terminal 1: Start ZooKeeper
+### Terminal 1
 bin/zookeeper-server-start.sh config/zookeeper.properties  
 
-### Terminal 2: Start Kafka Broker
+### Terminal 2
 bin/kafka-server-start.sh config/server.properties  
 
-### Terminal 3: Create Topic
-bin/kafka-topics.sh --create --topic cricket \
---bootstrap-server 127.0.0.1:9092 --partitions 1 --replication-factor 1  
+### Terminal 3 (Producer)
+python3 producer.py  
 
-### Terminal 4: Run Spark Consumer
-spark-submit --master local[*] \
---packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 \
-cricket_spark.py  
-
-### Terminal 5: Run Producer
-python3 cricket_producer.py  
-
-(As shown in your lab execution) :contentReference[oaicite:0]{index=0}  
-
-## 💻 Full Code
-
-```python
-### Producer (cricket_producer.py)
-from kafka import KafkaProducer
-import json, time, random
-
-producer = KafkaProducer(
-    bootstrap_servers='127.0.0.1:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
-
-players = ['Virat', 'Rohit', 'Gill']
-
-while True:
-    data = {
-        'player': random.choice(players),
-        'runs': random.choice([0,1,2,3,4,6])
-    }
-    print('Sending:', data)
-    producer.send('cricket', value=data)
-    producer.flush()
-    time.sleep(1)
-
-### Spark Consumer (cricket_spark.py)
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, sum as _sum, count
-from pyspark.sql.types import StructType, StringType, IntegerType
-
-spark = SparkSession.builder.appName('CricketAnalytics') \
-    .master('local[*]').getOrCreate()
-
-spark.sparkContext.setLogLevel('ERROR')
-
-schema = StructType() \
-    .add('player', StringType()) \
-    .add('runs', IntegerType())
-
-df = spark.readStream.format('kafka') \
-    .option('kafka.bootstrap.servers', '127.0.0.1:9092') \
-    .option('subscribe', 'cricket') \
-    .load()
-
-json_df = df.selectExpr('CAST(value AS STRING)')
-
-parsed = json_df.select(from_json(col('value'), schema).alias('data'))
-
-player_df = parsed.select('data.player', 'data.runs')
-
-stats = player_df.groupBy('player').agg(
-    _sum('runs').alias('total_runs'),
-    count('runs').alias('balls')
-)
-
-stats = stats.withColumn(
-    'strike_rate',
-    (col('total_runs')/col('balls'))*100
-)
-
-query = stats.writeStream.outputMode('complete') \
-    .format('console') \
-    .start()
-
-query.awaitTermination()
-
-```
-
-## 📊 Output at Each Step
-
-### 🔹 Producer Output
-Sending: {'player': 'Virat', 'runs': 4}  
-Sending: {'player': 'Rohit', 'runs': 1}  
-Sending: {'player': 'Gill', 'runs': 6}  
+### Terminal 4 (Spark Consumer)
+spark-submit consumer.py  
 
 ---
 
-### 🔹 Streaming Output (Spark)
+## 💻 Full Code
 
-Batch 63:
-player | total_runs | balls | strike_rate  
-Rohit  | 53         | 21    | 252.38  
-Virat  | 40         | 19    | 210.52  
-Gill   | 70         | 24    | 291.66  
+### Producer (producer.py)
+from kafka import KafkaProducer  
+import json, random, time  
 
-Batch 65:
-player | total_runs | balls | strike_rate  
-Rohit  | 55         | 23    | 239.13  
-Virat  | 40         | 19    | 210.52  
-Gill   | 70         | 24    | 291.66  
+producer = KafkaProducer(  
+    bootstrap_servers='localhost:9092',  
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')  
+)  
+
+while True:  
+    data = {"runs": random.randint(0,6)}  
+    producer.send("cricket", value=data)  
+    time.sleep(1)  
+
+---
+
+### Spark Consumer (consumer.py)
+from pyspark.sql import SparkSession  
+from pyspark.sql.functions import *  
+
+spark = SparkSession.builder.appName("Cricket").getOrCreate()  
+
+df = spark.readStream.format("kafka") \
+    .option("kafka.bootstrap.servers","localhost:9092") \
+    .option("subscribe","cricket") \
+    .load()  
+
+json_df = df.selectExpr("CAST(value AS STRING)")  
+
+runs = json_df.select(from_json(col("value"), "runs INT").alias("data")).select("data.*")  
+
+result = runs.agg(sum("runs").alias("total_runs"))  
+
+query = result.writeStream.outputMode("complete").format("console").start()  
+query.awaitTermination()  
+
+---
+
+## 📊 Output
+
+Batch 0:  
+total_runs = 5  
+
+Batch 1:  
+total_runs = 12  
+
+Batch 2:  
+total_runs = 20  
 
 ---
 
 ## ✅ Final Output
-The system continuously computes real-time cricket statistics:
+The system continuously calculates total runs in real-time:
 
-✔ Total runs per player  
-✔ Balls faced per player  
-✔ Strike rate calculation  
+✔ Data sent by Kafka  
+✔ Spark reads and processes it  
+✔ Total runs updated continuously  
 
 Example:
-Rohit → 55 runs, SR = 239.13  
-Virat → 40 runs, SR = 210.52  
-Gill → 70 runs, SR = 291.66  
+Total Runs → 35 → 42 → 50 → ...
 
-✔ Output updates dynamically as new data arrives from Kafka  
-✔ Demonstrates real-time analytics using Kafka + Spark
+---
+
+## 🧠 Key Point
+Kafka sends data → Spark converts it into DataFrame → aggregation is done in real-time
