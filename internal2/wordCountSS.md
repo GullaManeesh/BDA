@@ -25,6 +25,8 @@ nc -lk 9999
 spark-submit wordcount_stream.py  
 
 ## 💻 Full Code (wordcount_stream.py)
+```
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode, split
 
@@ -48,6 +50,8 @@ query = wordCounts.writeStream.outputMode('complete') \
     .start()
 
 query.awaitTermination()
+
+```
 
 ## 📊 Output at Each Step
 
