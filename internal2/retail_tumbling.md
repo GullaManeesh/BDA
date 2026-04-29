@@ -18,33 +18,23 @@ The output updates as new files are streamed into the system.
 
 ## 🖥️ Commands to Execute (Step-by-Step)
 
-### Step 1: Install Requirements
-sudo apt update  
-sudo apt install openjdk-11-jdk -y  
-sudo apt install python3-pip -y  
 
-### Step 2: Setup Spark
-wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz  
-tar -xvzf spark-3.5.1-bin-hadoop3.tgz  
-mv spark-3.5.1-bin-hadoop3 ~/spark  
 
-echo 'export SPARK_HOME=~/spark' >> ~/.bashrc  
-echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc  
-source ~/.bashrc  
-
-### Step 3: Create Streaming Folder
+### Step 1: Create Streaming Folder
 mkdir retail_stream  
 
-### Step 4: Stream CSV Files (Terminal 1)
+### Step 2: Stream CSV Files (Terminal 1)
 for file in retail_30_days/*.csv; do  
   cp "$file" retail_stream/  
   sleep 2  
 done  
 
-### Step 5: Run Program (Terminal 2)
+### Step 3: Run Program (Terminal 2)
 spark-submit tumbling_window.py  
 
 ## 💻 Full Code (tumbling_window.py)
+```python
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_timestamp, sum, window
 from pyspark.sql.types import *
@@ -80,6 +70,8 @@ query = result.writeStream.outputMode('append') \
     .start()
 
 query.awaitTermination()
+
+```
 
 ## 📊 Output at Each Step
 
