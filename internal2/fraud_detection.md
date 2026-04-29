@@ -32,6 +32,7 @@ spark-submit fraud.py
 
 ## 💻 Full Code
 
+```python
 ### Producer (producer.py)
 from kafka import KafkaProducer
 import json, time, random
@@ -56,7 +57,7 @@ while True:
     print("Sent:", data)
 
     time.sleep(0.01)
-
+```
 ---
 ```python
 ### Spark Consumer (fraud.py)
