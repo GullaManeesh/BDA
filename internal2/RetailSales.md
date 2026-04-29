@@ -18,33 +18,25 @@ The output updates dynamically as new files are added to the stream directory.
 
 ## 🖥️ Commands to Execute (Step-by-Step)
 
-### Step 1: Install Requirements
-sudo apt update  
-sudo apt install openjdk-11-jdk -y  
-sudo apt install python3-pip -y  
 
-### Step 2: Setup Spark
-wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz  
-tar -xvzf spark-3.5.1-bin-hadoop3.tgz  
-mv spark-3.5.1-bin-hadoop3 ~/spark  
 
-echo 'export SPARK_HOME=~/spark' >> ~/.bashrc  
-echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc  
-source ~/.bashrc  
-
-### Step 3: Prepare Streaming Folder
+### Step 1: Prepare Streaming Folder
 mkdir retail_stream  
 
 ### Step 4: Start Streaming (Terminal 1 – simulate files)
-while true; do  
-  cp sample.csv retail_stream/  
-  sleep 2  
-done  
+```
+for file in retail_30_days/*.csv; do
+  cp "$file" retail_stream/
+  sleep 2
+done
+```
 
 ### Step 5: Run Program (Terminal 2)
 spark-submit retail_stream.py  
 
 ## 💻 Full Code (retail_stream.py)
+
+```
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_timestamp, sum
 from pyspark.sql.types import *
@@ -78,6 +70,8 @@ query = result.writeStream.outputMode('complete') \
     .start()
 
 query.awaitTermination()
+
+```
 
 ## 📊 Output at Each Step
 
