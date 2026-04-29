@@ -39,10 +39,17 @@ producer = KafkaProducer(
     value_serializer=lambda v: json.dumps(v).encode('utf-8')  
 )  
 
-while True:  
-    data = {"runs": random.randint(0,6)}  
-    producer.send("cricket", value=data)  
-    time.sleep(1)  
+players = ['Virat', 'Rohit', 'Gill']
+
+while True:
+    data = {
+        'player': random.choice(players),
+        'runs': random.choice([0,1,2,3,4,6])
+    }
+    print('Sending:', data)
+    producer.send('cricket', value=data)
+    producer.flush()
+    time.sleep(1)
 
 ---
 
