@@ -36,7 +36,7 @@ spark-submit retail_stream.py
 
 ## 💻 Full Code (retail_stream.py)
 
-```
+```python
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_timestamp, sum
 from pyspark.sql.types import *
