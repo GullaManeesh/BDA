@@ -25,7 +25,7 @@ nc -lk 9999
 spark-submit wordcount_stream.py  
 
 ## 💻 Full Code (wordcount_stream.py)
-```
+```python
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode, split
