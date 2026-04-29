@@ -15,20 +15,6 @@ The input text is split into words, grouped, and counted dynamically as new data
 - Spark SQL / Structured Streaming – A high-level API in Spark that processes streaming data using DataFrame and SQL operations, enabling real-time analytics.
 
 ## 🖥️ Commands to Execute (Ubuntu)
-sudo apt update  
-sudo apt install openjdk-11-jdk -y  
-sudo apt install scala -y  
-
-wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz  
-tar -xvzf spark-3.5.1-bin-hadoop3.tgz  
-mv spark-3.5.1-bin-hadoop3 ~/spark  
-
-echo 'export SPARK_HOME=~/spark' >> ~/.bashrc  
-echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc  
-source ~/.bashrc  
-
-# Start socket stream (open another terminal)
-nc -lk 9999  
 
 # Start Spark Shell
 spark-shell  
