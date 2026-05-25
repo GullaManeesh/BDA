@@ -180,6 +180,10 @@ counts = pairs.reduceByKey(lambda a, b: a + b)
 
 ```python
 counts.collect()
+
+or
+
+counts.foreach(print)
 ```
 
 ### Final Output
