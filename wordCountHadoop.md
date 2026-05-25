@@ -227,6 +227,10 @@ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 -reducer reducer.py \
 -input /wordcount/word.txt \
 -output /wordcount_output
+
+
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar -file mapper.py -mapper mapper.py -file reducer.py -reducer reducer.py -input /wordcount/word.txt -output /wordcount_output
 ```
 
 ---
