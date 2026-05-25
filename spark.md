@@ -78,7 +78,7 @@ Expected output:
 # 4. Start Spark Shell
 
 ```bash
-pyspark
+pyspark or spark-shell
 ```
 
 Spark prompt appears:
